@@ -1,7 +1,7 @@
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView, TouchableNativeFeedback } from "react-native";
 import React, { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import { Link } from "expo-router";
+import { Link, Router, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { User, Settings, Search, Star } from "lucide-react-native";
 import { testProps } from "../../testProps";
@@ -24,11 +24,9 @@ interface Property {
 }
 
 const HomePage = () => {
+	const router = useRouter();
 	const [leftProperties, setLeftProperties] = React.useState<Property[]>([]);
 	const [rightProperties, setRightProperties] = React.useState<Property[]>([]);
-
-	const blurhash =
-		"|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
 	useEffect(() => {
 		async function fetchProperties() {
@@ -56,7 +54,7 @@ const HomePage = () => {
 		<SafeAreaView className="py-1 bg-gray-50 flex-1">
 			<View
 				id="header"
-				className="flex flex-row justify-between items-center p-3 bg-white"
+				className="flex flex-row justify-between items-center p-3"
 			>
 				<Link href="/profile" className="flex flex-row gap-2">
 					<User color={"black"} size={30} />
@@ -76,49 +74,63 @@ const HomePage = () => {
 					{/* Left Column */}
 					<View className="flex-1">
 						{leftProperties.map((item, i) => (
-							<View key={i} className="mb-4 break-inside-avoid">
-								<Image
-									source={{ uri: item.mainImage }}
-									style={{ width: "100%", height: 200, borderRadius: 8 }}
-								/>
-								<Text className="mt-2">
-									<Star color={"black"} fill={"black"} size={15} />
-									{"  "}
-									{item.rating}
-									{""}({item.ratingNumber.toLocaleString()})
-								</Text>
-								<Text className="text-lg font-bold">{item.houseName}</Text>
-								<Text className="text-sm text-gray-600 line-clamp-1">
-									From N{item.startingPricePerYear}k / year
-								</Text>
-							</View>
+							<TouchableNativeFeedback
+								key={i}
+								onPress={() =>
+									router.push(`/property/${item.houseName.toLowerCase()}`)
+								}
+							>
+								<View key={i} className="mb-4 ">
+									<Image
+										source={{ uri: item.mainImage }}
+										style={{ width: "100%", height: 200, borderRadius: 8 }}
+									/>
+									<Text className="mt-2">
+										<Star color={"black"} fill={"black"} size={15} />
+										{"  "}
+										{item.rating}
+										{""}({item.ratingNumber.toLocaleString()})
+									</Text>
+									<Text className="text-lg font-bold">{item.houseName}</Text>
+									<Text className="text-sm text-gray-600 line-clamp-1">
+										From ₦{item.startingPricePerYear}k / year
+									</Text>
+								</View>
+							</TouchableNativeFeedback>
 						))}
 					</View>
 
 					{/* Right Column */}
 					<View className="flex-1 ml-2">
 						{rightProperties.map((item, i) => (
-							<View key={i} className="mb-4 break-inside-avoid">
-								<Image
-									source={{ uri: item.mainImage }}
-									style={{ width: "100%", height: 200, borderRadius: 8 }}
-								/>
-								<Text className="mt-2">
-									<Star color={"black"} fill={"black"} size={15} />
-									{"  "}
-									{item.rating}
-									{""}({item.ratingNumber.toLocaleString()})
-								</Text>
-								<Text className="text-lg font-bold">{item.houseName}</Text>
-								<Text className="text-sm text-gray-600 line-clamp-1">
-									From N{item.startingPricePerYear}k / year
-								</Text>
-							</View>
+							<TouchableNativeFeedback
+								key={i}
+								onPress={() =>
+									router.push(`/property/${item.houseName.toLowerCase()}`)
+								}
+							>
+								<View className="mb-4 break-inside-avoid">
+									<Image
+										source={{ uri: item.mainImage }}
+										style={{ width: "100%", height: 200, borderRadius: 8 }}
+									/>
+									<Text className="mt-2">
+										<Star color={"black"} fill={"black"} size={15} />
+										{"  "}
+										{item.rating}
+										{""}({item.ratingNumber.toLocaleString()})
+									</Text>
+									<Text className="text-lg font-bold">{item.houseName}</Text>
+									<Text className="text-sm text-gray-600 line-clamp-1">
+										From ₦{item.startingPricePerYear}k / year
+									</Text>
+								</View>
+							</TouchableNativeFeedback>
 						))}
 					</View>
 				</View>
 			</ScrollView>
-			<StatusBar style="dark" />
+			<StatusBar style="inverted" />
 		</SafeAreaView>
 	);
 };

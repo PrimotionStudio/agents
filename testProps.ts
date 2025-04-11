@@ -2,8 +2,8 @@ export const testProps = [
 	{
 		rating: 0.4,
 		ratingNumber: 4745,
-		houseName: "Mrs",
-		category: "Studio",
+		houseName: "The Hideaway",
+		category: "Apartment",
 		location: "Marolambo",
 		mainImage: "http://dummyimage.com/203x100.png/dddddd/000000",
 		houseDescription:
@@ -18,8 +18,8 @@ export const testProps = [
 	{
 		rating: 2.7,
 		ratingNumber: 1406,
-		houseName: "Dr",
-		category: "Loft",
+		houseName: "The Oasis",
+		category: "Townhouse",
 		location: "Rojas",
 		mainImage: "http://dummyimage.com/183x100.png/5fa2dd/ffffff",
 		houseDescription:
@@ -34,8 +34,8 @@ export const testProps = [
 	{
 		rating: 3.4,
 		ratingNumber: 3462,
-		houseName: "Ms",
-		category: "Mansion",
+		houseName: "Briarwood Estate",
+		category: "Luxury Home",
 		location: "Temayang",
 		mainImage: "http://dummyimage.com/243x100.png/cc0000/ffffff",
 		houseDescription:
@@ -50,8 +50,8 @@ export const testProps = [
 	{
 		rating: 4.3,
 		ratingNumber: 9725,
-		houseName: "Mr",
-		category: "Mansion",
+		houseName: "Sunset Villa",
+		category: "Luxury Villa",
 		location: "Longfengba",
 		mainImage: "http://dummyimage.com/173x100.png/5fa2dd/ffffff",
 		houseDescription:
@@ -66,8 +66,8 @@ export const testProps = [
 	{
 		rating: 4.2,
 		ratingNumber: 6586,
-		houseName: "Honorable",
-		category: "Cottage",
+		houseName: "Rosewood Cottage",
+		category: "Cozy Cottage",
 		location: "Velyka Lepetykha",
 		mainImage: "http://dummyimage.com/110x100.png/cc0000/ffffff",
 		houseDescription:
@@ -82,8 +82,8 @@ export const testProps = [
 	{
 		rating: 0.1,
 		ratingNumber: 7465,
-		houseName: "Mrs",
-		category: "Mansion",
+		houseName: "Maple Retreat",
+		category: "Estate",
 		location: "Bailai",
 		mainImage: "http://dummyimage.com/133x100.png/5fa2dd/ffffff",
 		houseDescription:
@@ -98,8 +98,8 @@ export const testProps = [
 	{
 		rating: 4.3,
 		ratingNumber: 5989,
-		houseName: "Rev",
-		category: "Villa",
+		houseName: "Casa Bella",
+		category: "Luxury Home",
 		location: "Magutian",
 		mainImage: "http://dummyimage.com/114x100.png/cc0000/ffffff",
 		houseDescription:
@@ -114,8 +114,8 @@ export const testProps = [
 	{
 		rating: 2.0,
 		ratingNumber: 336,
-		houseName: "Ms",
-		category: "Villa",
+		houseName: "Villa Del Sol",
+		category: "Luxury Villa",
 		location: "Kunting",
 		mainImage: "http://dummyimage.com/122x100.png/ff4444/ffffff",
 		houseDescription:
@@ -130,8 +130,8 @@ export const testProps = [
 	{
 		rating: 0.1,
 		ratingNumber: 8951,
-		houseName: "Honorable",
-		category: "Mansion",
+		houseName: "The Chateau",
+		category: "Luxury Estate",
 		location: "Vyshneye Dolgoye",
 		mainImage: "http://dummyimage.com/203x100.png/dddddd/000000",
 		houseDescription:
@@ -146,8 +146,8 @@ export const testProps = [
 	{
 		rating: 2.5,
 		ratingNumber: 2765,
-		houseName: "Ms",
-		category: "Cottage",
+		houseName: "Magnolia Cottage",
+		category: "Cozy Home",
 		location: "Port Erin",
 		mainImage: "http://dummyimage.com/226x100.png/cc0000/ffffff",
 		houseDescription:

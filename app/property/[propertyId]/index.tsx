@@ -13,6 +13,16 @@ import { Link, useLocalSearchParams } from "expo-router";
 import { StatusBar as SB } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
+// Assume you have some test data to simulate API response
+import { testProps } from "../../../testProps";
+import {
+	ChevronDown,
+	ChevronLeft,
+	Share,
+	Star,
+	User,
+} from "lucide-react-native";
+
 interface Property {
 	agent: {
 		fullName: string;
@@ -28,10 +38,6 @@ interface Property {
 	ratingNumber: number;
 	startingPricePerYear: number;
 }
-
-// Assume you have some test data to simulate API response
-import { testProps } from "../../../testProps";
-import { ChevronDown, ChevronLeft, Share, User } from "lucide-react-native";
 
 const PropertyPage = () => {
 	// Get the dynamic id parameter from URL
@@ -94,8 +100,32 @@ const PropertyPage = () => {
 				<Text className="my-3 text-muted text-gray-600">
 					{property.location}
 				</Text>
-				<View className="border border-grey-800 p-3 rounded-2xl my-3"></View>
+
 				<View className="border border-grey-800 p-3 rounded-2xl my-3">
+					<View className="flex flex-row justify-between items-center">
+						<View className="flex flex-col items-center gap-1">
+							<Text className="font-bold text-2xl">{property.rating}</Text>
+							<View className="flex flex-row">
+								<Star color={"gold"} size={10} />
+								<Star color={"gold"} size={10} />
+								<Star color={"gold"} size={10} />
+								<Star color={"gold"} size={10} />
+								<Star color={"gold"} size={10} />
+							</View>
+						</View>
+
+						<View className="h-4 w-px bg-gray-800 mx-2" />
+
+						<View className="flex flex-col">
+							<Text className="font-bold text-2xl">
+								{property.ratingNumber.toLocaleString()}
+							</Text>
+							<Text>reviews</Text>
+						</View>
+					</View>
+				</View>
+
+				<View className="border-b p-3 rounded-2xl my-3">
 					<TouchableWithoutFeedback
 						onPress={() => setShowMoreDescription(!showMoreDescription)}
 					>
@@ -104,6 +134,7 @@ const PropertyPage = () => {
 						</Text>
 					</TouchableWithoutFeedback>
 				</View>
+
 				<Text style={{ marginTop: 8 }}>
 					Rating: {property.rating} ({property.ratingNumber.toLocaleString()})
 				</Text>

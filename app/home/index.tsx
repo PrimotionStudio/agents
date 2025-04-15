@@ -1,7 +1,13 @@
-import { Text, View, ScrollView, TouchableNativeFeedback } from "react-native";
+import {
+	Text,
+	View,
+	ScrollView,
+	TouchableNativeFeedback,
+	TouchableOpacity,
+} from "react-native";
 import React, { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import { Link, Router, useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { User, Settings, Search, Star } from "lucide-react-native";
 import { testProps } from "../../testProps";
@@ -44,14 +50,12 @@ const HomePage = () => {
 				console.error((error as Error).message);
 			}
 		}
-		// fetchProperties();
-		// console.log(testProps);
-		// setProperties(testProps);
 		setLeftProperties(testProps.filter((_, index) => index % 2 === 0));
 		setRightProperties(testProps.filter((_, index) => index % 2 !== 0));
 	}, []);
 	return (
 		<SafeAreaView className="py-1 bg-gray-50 flex-1">
+			{/* Top Header */}
 			<View
 				id="header"
 				className="flex flex-row justify-between items-center p-3"
@@ -69,12 +73,14 @@ const HomePage = () => {
 					<Settings color={"black"} size={30} />
 				</Link>
 			</View>
+
+			{/* Property Listing */}
 			<ScrollView contentContainerStyle={{ padding: 16 }}>
 				<View className="flex-row">
 					{/* Left Column */}
 					<View className="flex-1">
 						{leftProperties.map((item, i) => (
-							<TouchableNativeFeedback
+							<TouchableOpacity
 								key={i}
 								onPress={() =>
 									router.push(`/property/${item.houseName.toLowerCase()}`)
@@ -96,14 +102,14 @@ const HomePage = () => {
 										From ₦{item.startingPricePerYear}k / year
 									</Text>
 								</View>
-							</TouchableNativeFeedback>
+							</TouchableOpacity>
 						))}
 					</View>
 
 					{/* Right Column */}
 					<View className="flex-1 ml-2">
 						{rightProperties.map((item, i) => (
-							<TouchableNativeFeedback
+							<TouchableOpacity
 								key={i}
 								onPress={() =>
 									router.push(`/property/${item.houseName.toLowerCase()}`)
@@ -125,7 +131,7 @@ const HomePage = () => {
 										From ₦{item.startingPricePerYear}k / year
 									</Text>
 								</View>
-							</TouchableNativeFeedback>
+							</TouchableOpacity>
 						))}
 					</View>
 				</View>

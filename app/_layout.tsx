@@ -6,11 +6,7 @@ export default function Layout() {
 		<Stack screenOptions={{ headerShown: false }}>
 			<Stack.Screen name="home/index" />
 			<Stack.Screen
-				name="viewProperty/index"
-				options={{ presentation: "formSheet" }}
-			/>
-			<Stack.Screen
-				name="viewAgent/index"
+				name="agent/index"
 				options={{ presentation: "formSheet" }}
 			/>
 		</Stack>

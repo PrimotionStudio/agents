@@ -106,14 +106,20 @@ const PropertyPage = () => {
 						<View className="flex flex-col items-center gap-1">
 							<Text className="font-bold text-2xl">{property.rating}</Text>
 							<View className="flex flex-row">
-								<Star color={"gold"} size={10} />
-								<Star color={"gold"} size={10} />
-								<Star color={"gold"} size={10} />
-								<Star color={"gold"} size={10} />
-								<Star color={"gold"} size={10} />
+								<Star color={"black"} size={10} />
+								<Star color={"black"} size={10} />
+								<Star color={"black"} size={10} />
+								<Star color={"black"} size={10} />
+								<Star color={"black"} size={10} />
 							</View>
 						</View>
 
+						<View className="h-4 w-px bg-gray-800 mx-2" />
+
+						<View className="flex">
+							<Text className="font-bold text-2xl">₦{property.startingPricePerYear}</Text>
+							<Text className="text-sm">/ per year</Text>
+						</View>
 						<View className="h-4 w-px bg-gray-800 mx-2" />
 
 						<View className="flex flex-col">
@@ -135,6 +141,19 @@ const PropertyPage = () => {
 					</TouchableWithoutFeedback>
 				</View>
 
+				<View className="border border-grey-800 p-3 rounded-2xl my-3 flex flex-row items-center gap-x-5">
+					<Image
+						source={{ uri: 'https://picsum.photos/50/50' }}
+						className="h-[50] w-[50] rounded-full"
+					/>
+					<View className="">
+						<Text className="text-sm">Agent Details</Text>
+						<Text className="text-3xl">{property.agent.fullName}</Text>
+						<Text className="text-lg">
+							<Link href={`tel:${property.agent.phoneNumber}`}>{property.agent.phoneNumber}</Link>
+						</Text>
+					</View>
+				</View>
 				<Text style={{ marginTop: 8 }}>
 					Rating: {property.rating} ({property.ratingNumber.toLocaleString()})
 				</Text>

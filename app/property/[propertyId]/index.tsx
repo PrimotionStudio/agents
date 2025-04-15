@@ -9,6 +9,7 @@ import {
 	ScrollView,
 	TouchableWithoutFeedback,
 	TouchableOpacity,
+	Alert,
 } from "react-native";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar as SB } from "react-native";
@@ -61,7 +62,7 @@ const PropertyPage = () => {
 			if (!property) return;
 			const { status } = await Location.requestForegroundPermissionsAsync();
 			if (status !== "granted") {
-				console.error("Location permission not granted");
+				Alert.alert("Location permission not granted");
 				return;
 			}
 			let locationCoordinates = await Location.geocodeAsync(property.location);
@@ -74,7 +75,7 @@ const PropertyPage = () => {
 					longitudeDelta: 0.001,
 				});
 			} else {
-				console.error("No results found for this address.");
+				Alert.alert("No results found for this address.");
 			}
 		})();
 	}, [property]);
@@ -160,7 +161,7 @@ const PropertyPage = () => {
 
 				<TouchableOpacity
 					onPress={() => {
-						router.push("/agent");
+						router.push(`/agent/${property.agent.phoneNumber}`);
 					}}
 				>
 					<View className="border border-grey-800 p-3 rounded-2xl my-3 flex flex-row items-center gap-x-5">
@@ -180,7 +181,7 @@ const PropertyPage = () => {
 					</View>
 				</TouchableOpacity>
 
-				{location && (
+				{location ? (
 					<TouchableWithoutFeedback>
 						<MapView style={{ height: 300, width: "100%" }} region={location}>
 							<Marker
@@ -193,8 +194,9 @@ const PropertyPage = () => {
 							/>
 						</MapView>
 					</TouchableWithoutFeedback>
+				) : (
+					<Text style={{ marginTop: 8 }}>Location: {property.location}</Text>
 				)}
-				<Text style={{ marginTop: 8 }}>Location: {property.location}</Text>
 			</ScrollView>
 		</View>
 	);

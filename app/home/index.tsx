@@ -60,7 +60,8 @@ const HomePage = () => {
 				id="header"
 				className="flex flex-row justify-between items-center p-3"
 			>
-				<Link href="/profile" className="flex flex-row gap-2">
+				{/* <Link href="/profile" className="flex flex-row gap-2"> */}
+				<Link href="/auth" className="flex flex-row gap-2">
 					<User color={"black"} size={30} />
 				</Link>
 				<View className="w-2/3 border border-black rounded-3xl">

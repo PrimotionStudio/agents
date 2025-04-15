@@ -23,7 +23,6 @@ export default function viewAgent() {
 	async function contactAgent(agentNumber: string) {
 		const supported = await Linking.canOpenURL(agentNumber);
 		if (supported) {
-			// Opening the dialer with the phone number
 			await Linking.openURL(agentNumber);
 		} else {
 			Alert.alert("Error", "Your device does not support this feature.");
@@ -63,13 +62,12 @@ export default function viewAgent() {
 						<Text className="text-xl">Has a rating of 4.9</Text>
 					</View>
 				</View>
-				{/* <Link href={`tel:+123456789`}> */}
+
 				<View className="bg-white hover:bg-gray-200 p-4 mt-[2em] mx-[1em] rounded-2xl flex flex-row items-center justify-center border">
 					<TouchableOpacity onPress={() => contactAgent("tel:914-242-2095")}>
 						<Text className="text-3xl">Contact Agent</Text>
 					</TouchableOpacity>
 				</View>
-				{/* </Link> */}
 			</View>
 		</View>
 	);

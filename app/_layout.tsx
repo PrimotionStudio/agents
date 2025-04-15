@@ -6,7 +6,7 @@ export default function Layout() {
 		<Stack screenOptions={{ headerShown: false }}>
 			<Stack.Screen name="home/index" />
 			<Stack.Screen
-				name="agent/index"
+				name="agent/[agentId]/index"
 				options={{ presentation: "formSheet" }}
 			/>
 		</Stack>

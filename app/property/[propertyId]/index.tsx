@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { Link, useLocalSearchParams } from "expo-router";
 import { StatusBar as SB } from "react-native";
+import MapView from "expo-maps";
 import { StatusBar } from "expo-status-bar";
 
 // Assume you have some test data to simulate API response
@@ -154,11 +155,12 @@ const PropertyPage = () => {
 						</Text>
 					</View>
 				</View>
+
+				<TouchableWithoutFeedback>
+					<MapView />
+				</TouchableWithoutFeedback>
 				<Text style={{ marginTop: 8 }}>
-					Rating: {property.rating} ({property.ratingNumber.toLocaleString()})
-				</Text>
-				<Text style={{ marginTop: 8 }}>
-					Price: ₦{property.startingPricePerYear}k / year
+					Location: {property.location}
 				</Text>
 			</ScrollView>
 		</View>

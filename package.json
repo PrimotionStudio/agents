@@ -11,6 +11,7 @@
   "dependencies": {
     "@lucide/lab": "^0.1.2",
     "@react-native-picker/picker": "^2.11.0",
+    "date-fns": "^4.1.0",
     "expo": "^52.0.16",
     "expo-constants": "~17.0.2",
     "expo-image": "~2.0.7",
@@ -37,6 +38,7 @@
     "react-native-screens": "^4.4.0",
     "react-native-svg": "^15.8.0",
     "react-native-web": "~0.19.6",
+    "timeago.js": "^4.0.2",
     "zustand": "^5.0.3"
   },
   "devDependencies": {

@@ -26,9 +26,12 @@ import {
 	Star,
 	User,
 } from "lucide-react-native";
+import * as SecureStore from "expo-secure-store";
 
 interface Property {
+	_id: string;
 	agent: {
+		_id: string;
 		fullName: string;
 		phoneNumber: string;
 	};
@@ -49,13 +52,55 @@ const PropertyPage = () => {
 	const [property, setProperty] = useState<Property | null>(null);
 	const [showMoreDescription, setShowMoreDescription] = useState(false);
 	const [location, setLocation] = useState(null);
+	const [jwtToken, setJwtToken] = useState<string>("");
+	const [isFetching, setIsFetching] = useState<boolean>(true);
 
 	useEffect(() => {
-		const found = testProps.find(
-			(prop) => prop.houseName.toLowerCase() === propertyId.toLowerCase()
-		);
-		setProperty(found || null);
-	}, [propertyId]);
+		(async () => {
+			setJwtToken(await SecureStore.getItemAsync("jwtToken"));
+		})();
+	}, []);
+
+	useEffect(() => {
+		try {
+			(async () => {
+				console.log("hey now");
+
+				if (!propertyId || !jwtToken) return;
+				console.log("say now");
+				const res = await fetch(
+					`http://192.168.177.139:9999/api/property/${propertyId}`,
+					{
+						headers: {
+							Authorization: jwtToken && `Bearer ${jwtToken}`,
+						},
+					}
+				);
+
+				const data = await res.json();
+				if (!res.ok) {
+					throw new Error(data.message);
+				}
+				// console.log("jwtToken", jwtToken);
+				// console.log("data.property", data.property);
+				setProperty({
+					...property,
+					...data.property,
+					rating: Math.floor(Math.random() * 5) + 1,
+					ratingNumber: Math.floor(Math.random() * 1000) + 1,
+				});
+			})();
+		} catch (error) {
+			console.error(error);
+			Alert.alert("Error", (error as Error).message);
+		} finally {
+			setIsFetching(false);
+		}
+		// const found = testProps.find(
+		// 	(prop) => prop.houseName.toLowerCase() === propertyId.toLowerCase()
+		// );
+		// setProperty(found || null);
+	}, [propertyId, jwtToken]);
 
 	useEffect(() => {
 		(async () => {
@@ -80,10 +125,10 @@ const PropertyPage = () => {
 		})();
 	}, [property]);
 
-	if (!property) {
+	if (isFetching || !property) {
 		return (
 			<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-				<Text>Loading property...</Text>
+				<View className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></View>
 			</View>
 		);
 	}
@@ -104,9 +149,9 @@ const PropertyPage = () => {
 						<ChevronLeft color={"black"} size={30} />
 					</TouchableOpacity>
 
-					<TouchableOpacity className="flex flex-row gap-2 bg-white rounded-full p-2">
+					{/* <TouchableOpacity className="flex flex-row gap-2 bg-white rounded-full p-2">
 						<Share color={"black"} size={30} />
-					</TouchableOpacity>
+					</TouchableOpacity> */}
 				</SafeAreaView>
 			</View>
 
@@ -134,7 +179,7 @@ const PropertyPage = () => {
 
 						<View className="flex">
 							<Text className="font-bold text-2xl">
-								₦{property.startingPricePerYear}
+								₦{property.startingPricePerYear}k
 							</Text>
 							<Text className="text-sm">/ per year</Text>
 						</View>
@@ -158,28 +203,29 @@ const PropertyPage = () => {
 						</Text>
 					</View>
 				</TouchableWithoutFeedback>
-
-				<TouchableOpacity
-					onPress={() => {
-						router.push(`/agent/${property.agent.phoneNumber}`);
-					}}
-				>
-					<View className="border border-grey-800 p-3 rounded-2xl my-3 flex flex-row items-center gap-x-5">
-						<Image
-							source={{ uri: "https://picsum.photos/50/50" }}
-							className="h-[50] w-[50] rounded-full object-cover"
-						/>
-						<View className="">
-							<Text className="text-sm">Agent Details</Text>
-							<Text className="text-3xl">{property.agent.fullName}</Text>
-							<Text className="text-lg">
-								<Link href={`tel:${property.agent.phoneNumber}`}>
-									{property.agent.phoneNumber}
-								</Link>
-							</Text>
+				{jwtToken && (
+					<TouchableOpacity
+						onPress={() => {
+							router.push(`/agent/${property.agent._id}`);
+						}}
+					>
+						<View className="border border-grey-800 p-3 rounded-2xl my-3 flex flex-row items-center gap-x-5">
+							<Image
+								source={{ uri: "https://picsum.photos/50/50" }}
+								className="h-[50] w-[50] rounded-full object-cover"
+							/>
+							<View className="">
+								<Text className="text-sm">Agent Details</Text>
+								<Text className="text-3xl">{property.agent.fullName}</Text>
+								<Text className="text-lg">
+									<Link href={`tel:${property.agent.phoneNumber}`}>
+										{property.agent.phoneNumber}
+									</Link>
+								</Text>
+							</View>
 						</View>
-					</View>
-				</TouchableOpacity>
+					</TouchableOpacity>
+				)}
 
 				{location ? (
 					<TouchableWithoutFeedback>

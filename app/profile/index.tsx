@@ -1,23 +1,15 @@
 import {
-	Image,
-	StyleSheet,
-	Text,
-	TouchableNativeFeedback,
 	View,
-	StatusBar as SB,
-	Linking,
+	Text,
+	SafeAreaView,
 	TouchableOpacity,
-	Alert,
+	Image,
+	TextInput,
+	GestureResponderEvent,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Link, router, useLocalSearchParams } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
-import {
-	CalendarDays,
-	ChevronLeft,
-	MapPinHouse,
-	Stars,
-} from "lucide-react-native";
+import { router } from "expo-router";
+import { ChevronLeft, MapPinHouse, CalendarDays } from "lucide-react-native";
 import {
 	differenceInDays,
 	differenceInHours,
@@ -26,14 +18,6 @@ import {
 	differenceInYears,
 } from "date-fns";
 import * as SecureStore from "expo-secure-store";
-
-interface Agent {
-	_id: string;
-	fullName: string;
-	phoneNumber: string;
-	role: "agent";
-	createdAt: Date;
-}
 
 function timeago(date: Date): string {
 	const now = new Date();
@@ -54,68 +38,30 @@ function timeago(date: Date): string {
 	return `${minutes} minutes`;
 }
 
-export default function viewAgent() {
-	const { agentId } = useLocalSearchParams<{ agentId: string }>();
+export default function ProfilePage() {
+	const [fullName, setFullName] = useState("");
+	const [phoneNumber, setPhoneNumber] = useState("");
 	const [jwtToken, setJwtToken] = useState<string>("");
 	const [isFetching, setIsFetching] = useState<boolean>(true);
-	const [agent, setAgent] = useState<Agent>({
-		_id: "",
-		fullName: "",
-		phoneNumber: "",
-		role: "agent",
-		createdAt: new Date(),
-	});
 
 	useEffect(() => {
 		(async () => {
 			setJwtToken(await SecureStore.getItemAsync("jwtToken"));
 		})();
 	}, []);
+	async function editProfile(event: GestureResponderEvent) {
+		event.preventDefault();
+		try {
+			if (!jwtToken || !fullName || !phoneNumber) return;
 
-	useEffect(() => {
-		(async () => {
-			try {
-				if (!jwtToken || !agentId) return;
-
-				const headers = {
-					Authorization: `Bearer ${jwtToken}`,
-				};
-				const res = await fetch(
-					`http://192.168.177.139:9999/api/agent/${agentId}`,
-					{
-						headers,
-					}
-				);
-
-				const data = await res.json();
-				if (!res.ok) {
-					throw new Error(data.message);
-				}
-
-				setAgent(data.agent);
-			} catch (error) {
-				console.error("Failed to load user:", error);
-			} finally {
-				setIsFetching(false);
-			}
-		})();
-	}, [jwtToken, agentId]);
-
-	async function contactAgent(agentNumber: string) {
-		const supported = await Linking.canOpenURL(agentNumber);
-		if (supported) {
-			await Linking.openURL(agentNumber);
-		} else {
-			Alert.alert("Error", "Your device does not support this feature.");
-		}
-	}
-
-	if (isFetching) {
-		return (
-			<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-				<View className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></View>
-			</View>
-		);
+			const res = await fetch(`http://192.168.177.139:9999/api/user/update`, {
+				method: "PATCH",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ fullName, phoneNumber }),
+			});
+		} catch (error) {}
 	}
 
 	return (
@@ -137,16 +83,24 @@ export default function viewAgent() {
 
 			<View className="w-full h-1/2 ">
 				<View className="m-[2em]">
-					<Text className="text-4xl font-bold">Meet {agent.fullName}</Text>
+					<Text className="text-4xl font-bold">Edit Profile</Text>
 					<View className="flex flex-row gap-x-4 items-center mt-4">
-						<MapPinHouse size={20} color={"black"} />
-						<Text className="text-xl">{agent.phoneNumber}</Text>
+						<TextInput
+							placeholder="Full Name"
+							value={fullName}
+							onChange={(e) => setFullName(e.nativeEvent.text)}
+							className="p-2 text-xl border rounded-xl w-full"
+						/>
+						<TextInput
+							placeholder="Phone Number"
+							value={phoneNumber}
+							onChange={(e) => setPhoneNumber(e.nativeEvent.text)}
+							className="p-2 text-xl border rounded-xl w-full"
+						/>
 					</View>
 					<View className="flex flex-row gap-x-4 items-center mt-2">
 						<CalendarDays size={20} color={"black"} />
-						<Text className="text-xl">
-							{timeago(new Date(agent.createdAt))} of housing experience
-						</Text>
+						<Text className="text-xl">Joined {timeago(new Date())} ago</Text>
 					</View>
 					{/* <View className="flex flex-row gap-x-4 items-center mt-2">
 						<Stars size={20} color={"black"} />
@@ -155,8 +109,8 @@ export default function viewAgent() {
 				</View>
 
 				<View className="bg-white hover:bg-gray-200 p-4 mt-[2em] mx-[1em] rounded-2xl flex flex-row items-center justify-center border">
-					<TouchableOpacity onPress={() => contactAgent("tel:914-242-2095")}>
-						<Text className="text-3xl">Contact Agent</Text>
+					<TouchableOpacity onPress={editProfile}>
+						<Text className="text-3xl">Update</Text>
 					</TouchableOpacity>
 				</View>
 			</View>

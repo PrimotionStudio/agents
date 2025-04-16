@@ -236,6 +236,12 @@ export default function Auth() {
 					</View>
 				</View>
 			)}
+			<View className="flex flex-row gap-y-2 justify-center mt-[1em]">
+				<Text className="text-muted">Continue without an account? </Text>
+				<TouchableOpacity onPress={() => router.push("/home")}>
+					<Text className="text-blue-500">Continue</Text>
+				</TouchableOpacity>
+			</View>
 		</View>
 	);
 }

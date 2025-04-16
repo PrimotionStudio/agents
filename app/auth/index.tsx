@@ -4,16 +4,22 @@ import {
 	TouchableOpacity,
 	TextInput,
 	GestureResponderEvent,
+	Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Picker } from "@react-native-picker/picker";
+import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 
 export default function Auth() {
+	const router = useRouter();
 	const [currentState, setCurrentState] = useState<"login" | "register">(
 		"login"
 	);
-	const [selectedValue, setSelectedValue] = useState("buyer");
+	const [selectedValue, setSelectedValue] = useState<"buyer" | "agent">(
+		"buyer"
+	);
 
 	const [loginData, setLoginData] = useState({
 		phoneNumber: "",
@@ -25,14 +31,76 @@ export default function Auth() {
 		phoneNumber: "",
 		password: "",
 		confirmPassword: "",
+		role: selectedValue,
 	});
 
-	function handleLogin(event: GestureResponderEvent): void {
-		throw new Error("Function not implemented.");
+	async function handleLogin(event: GestureResponderEvent) {
+		event.preventDefault();
+		try {
+			// const res = await fetch(`${process.env.API_URI}/api/auth/login`, {
+			const res = await fetch(`http://192.168.177.139:9999/api/auth/login`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					phoneNumber: loginData.phoneNumber,
+					password: loginData.password,
+				}),
+			});
+			const data = await res.json();
+			if (!res.ok) {
+				throw new Error(data.message);
+			}
+			Alert.alert("Success", data.message);
+			setLoginData({
+				phoneNumber: "",
+				password: "",
+			});
+			await SecureStore.setItemAsync("jwtToken", data.jwtToken);
+			router.push("/home");
+		} catch (error) {
+			// console.error(error as Error);
+			Alert.alert("Error", (error as Error).message);
+		}
 	}
 
-	function handleRegister(event: GestureResponderEvent): void {
-		throw new Error("Function not implemented.");
+	async function handleRegister(event: GestureResponderEvent) {
+		event.preventDefault();
+		try {
+			if (registerData.password !== registerData.confirmPassword) {
+				throw new Error("Passwords do not match");
+			}
+			// const res = await fetch(`${process.env.API_URI}/api/auth/register`, {
+			const res = await fetch(`http://192.168.177.139:9999/api/auth/register`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					fullName: registerData.fullName,
+					phoneNumber: registerData.phoneNumber,
+					password: registerData.password,
+					role: selectedValue,
+				}),
+			});
+			const data = await res.json();
+			if (!res.ok) {
+				throw new Error(data.message);
+			}
+			Alert.alert("Success", data.message);
+			setRegisterData({
+				fullName: "",
+				phoneNumber: "",
+				password: "",
+				confirmPassword: "",
+				role: selectedValue,
+			});
+			setCurrentState("login");
+		} catch (error) {
+			// console.error(error as Error);
+			Alert.alert("Error", (error as Error).message);
+		}
 	}
 
 	return (

@@ -4,6 +4,7 @@ import {
 	ScrollView,
 	TouchableNativeFeedback,
 	TouchableOpacity,
+	Alert,
 } from "react-native";
 import React, { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
@@ -11,7 +12,9 @@ import { Link, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { User, Settings, Search, Star } from "lucide-react-native";
 import { testProps } from "../../testProps";
+import * as SecureStore from "expo-secure-store";
 import { Image } from "expo-image";
+import { Avatar } from "react-native-elements";
 
 interface Property {
 	agent: {
@@ -29,30 +32,72 @@ interface Property {
 	startingPricePerYear: number;
 }
 
+interface User {
+	_id: string;
+	fullName: string;
+	phoneNumber: string;
+	role: "buyer" | "agent";
+}
+
 const HomePage = () => {
 	const router = useRouter();
+	const [currentUser, setCurrentUser] = React.useState<User>();
 	const [leftProperties, setLeftProperties] = React.useState<Property[]>([]);
 	const [rightProperties, setRightProperties] = React.useState<Property[]>([]);
+	const [jwtToken, setJwtToken] = React.useState<string>("");
+	const [properties, setProperties] = React.useState<Property[]>([]);
+	useEffect(() => {
+		(async () => {
+			setJwtToken(await SecureStore.getItemAsync("jwtToken"));
+		})();
+	}, []);
 
 	useEffect(() => {
-		async function fetchProperties() {
+		(async () => {
+			if (!jwtToken) return;
 			try {
-				const propertyResponse = await fetch(
-					"https://api.mockaroo.com/api/4a5174c0?count=10&key=c5e8ab40"
-				);
-				const propertyData = await propertyResponse.json();
-				if (!propertyResponse.ok) {
-					throw new Error(propertyData.message);
-				}
-				setLeftProperties(propertyData.filter((_, index) => index % 2 === 0));
-				setRightProperties(propertyData.filter((_, index) => index % 2 !== 0));
+				const headers = {
+					Authorization: `Bearer ${jwtToken}`,
+				};
+
+				// Fetch both user and property data in parallel
+				const [userRes, propertyRes] = await Promise.all([
+					fetch("http://192.168.177.139:9999/api/auth/me", { headers }),
+					fetch("http://192.168.177.139:9999/api/property", { headers }),
+				]);
+
+				const [userData, propertyData] = await Promise.all([
+					userRes.json(),
+					propertyRes.json(),
+				]);
+
+				// Handle response errors
+				if (!userRes.ok) throw new Error(userData.message);
+				if (!propertyRes.ok) throw new Error(propertyData.message);
+
+				// Set user
+				setCurrentUser(userData.user);
+
+				// Map and randomize property data
+				const mappedProps = propertyData.properties.map((property: any) => ({
+					...property,
+					mainImage: "https://picsum.photos/200/200",
+					rating: property.rating ?? Math.floor(Math.random() * 5) + 1,
+					ratingNumber:
+						property.ratingNumber ?? Math.floor(Math.random() * 1000) + 1,
+				}));
+
+				setProperties(mappedProps);
+
+				// Optimized: Use the `mappedProps` directly for slicing left/right
+				setLeftProperties(mappedProps.filter((_, index) => index % 2 === 0));
+				setRightProperties(mappedProps.filter((_, index) => index % 2 !== 0));
 			} catch (error) {
-				console.error((error as Error).message);
+				Alert.alert("Error", (error as Error).message);
 			}
-		}
-		setLeftProperties(testProps.filter((_, index) => index % 2 === 0));
-		setRightProperties(testProps.filter((_, index) => index % 2 !== 0));
-	}, []);
+		})();
+	}, [jwtToken]);
+
 	return (
 		<SafeAreaView className="py-1 bg-gray-50 flex-1">
 			{/* Top Header */}
@@ -60,10 +105,21 @@ const HomePage = () => {
 				id="header"
 				className="flex flex-row justify-between items-center p-3"
 			>
-				{/* <Link href="/profile" className="flex flex-row gap-2"> */}
-				<Link href="/auth" className="flex flex-row gap-2">
-					<User color={"black"} size={30} />
-				</Link>
+				{currentUser ? (
+					<Link href="/profile" className="flex flex-row gap-2">
+						<Avatar
+							rounded
+							size={"medium"}
+							titleStyle={{ color: "black" }}
+							// containerStyle={{ backgroundColor: "gray" }}
+							title={currentUser.fullName.charAt(0).toLocaleUpperCase()}
+						/>
+					</Link>
+				) : (
+					<Link href="/auth" className="flex flex-row gap-2">
+						<Avatar rounded icon={{ name: "home" }} />
+					</Link>
+				)}
 				<View className="w-2/3 border border-black rounded-3xl">
 					<Text className="text-2xl font-bold text-center">Port-Harcourt</Text>
 					<Text className="text-sm text-center">

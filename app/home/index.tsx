@@ -10,7 +10,14 @@ import React, { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { Link, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { User, Settings, Search, Star, LogOut } from "lucide-react-native";
+import {
+	User,
+	Settings,
+	Search,
+	Star,
+	LogOut,
+	Plus,
+} from "lucide-react-native";
 import { testProps } from "../../testProps";
 import * as SecureStore from "expo-secure-store";
 import { Image } from "expo-image";
@@ -65,8 +72,8 @@ const HomePage = () => {
 
 					// Fetch both user and property data in parallel
 					const [userRes, propertyRes] = await Promise.all([
-						fetch("http://192.168.177.139:9999/api/user/me", { headers }),
-						fetch("http://192.168.177.139:9999/api/property", { headers }),
+						fetch("http://192.168.232.139:9999/api/user/me", { headers }),
+						fetch("http://192.168.232.139:9999/api/property", { headers }),
 					]);
 
 					const [userData, propertyData] = await Promise.all([
@@ -84,10 +91,10 @@ const HomePage = () => {
 					// Map and randomize property data
 					const mappedProps = propertyData.properties.map((property: any) => ({
 						...property,
-						mainImage: "https://picsum.photos/200/200",
-						rating: property.rating ?? Math.floor(Math.random() * 5) + 1,
-						ratingNumber:
-							property.ratingNumber ?? Math.floor(Math.random() * 1000) + 1,
+						// mainImage: "https://picsum.photos/200/200",
+						// rating: property.rating ?? Math.floor(Math.random() * 5) + 1,
+						// ratingNumber:
+						// 	property.ratingNumber ?? Math.floor(Math.random() * 1000) + 1,
 					}));
 
 					// Optimized: Use the `mappedProps` directly for slicing left/right
@@ -95,17 +102,17 @@ const HomePage = () => {
 					setRightProperties(mappedProps.filter((_, index) => index % 2 !== 0));
 				} else {
 					const propertyRes = await fetch(
-						"http://192.168.177.139:9999/api/property"
+						"http://192.168.232.139:9999/api/property"
 					);
 					const propertyData = await propertyRes.json();
 
 					// Map and randomize property data
 					const mappedProps = propertyData.properties.map((property: any) => ({
 						...property,
-						mainImage: "https://picsum.photos/200/200",
-						rating: property.rating ?? Math.floor(Math.random() * 5) + 1,
-						ratingNumber:
-							property.ratingNumber ?? Math.floor(Math.random() * 1000) + 1,
+						// mainImage: "https://picsum.photos/200/200",
+						// rating: property.rating ?? Math.floor(Math.random() * 5) + 1,
+						// ratingNumber:
+						// 	property.ratingNumber ?? Math.floor(Math.random() * 1000) + 1,
 					}));
 
 					// Optimized: Use the `mappedProps` directly for slicing left/right
@@ -125,7 +132,7 @@ const HomePage = () => {
 	}
 
 	return (
-		<SafeAreaView className="py-1 bg-gray-50 flex-1">
+		<SafeAreaView className="py-1 bg-gray-50 flex h-full">
 			{/* Top Header */}
 			<View
 				id="header"
@@ -155,9 +162,15 @@ const HomePage = () => {
 						{new Date().toDateString()}
 					</Text>
 				</View>
-				<Link href="/auth" className="flex flex-row gap-2" onPress={logout}>
-					<LogOut color={"black"} size={30} />
-				</Link>
+				{currentUser?.role === "buyer" ? (
+					<Link href="/auth" className="flex flex-row gap-2" onPress={logout}>
+						<LogOut color={"black"} size={30} />
+					</Link>
+				) : (
+					<Link href="/property/create" className="flex flex-row gap-2">
+						<Plus color={"black"} size={30} />
+					</Link>
+				)}
 			</View>
 
 			{/* Property Listing */}

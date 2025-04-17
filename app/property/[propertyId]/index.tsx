@@ -52,8 +52,8 @@ const PropertyPage = () => {
 	const [property, setProperty] = useState<Property | null>(null);
 	const [showMoreDescription, setShowMoreDescription] = useState(false);
 	const [location, setLocation] = useState(null);
-	const [jwtToken, setJwtToken] = useState<string>("");
 	const [isFetching, setIsFetching] = useState<boolean>(true);
+	const [jwtToken, setJwtToken] = useState<string>("");
 
 	useEffect(() => {
 		(async () => {
@@ -64,12 +64,9 @@ const PropertyPage = () => {
 	useEffect(() => {
 		try {
 			(async () => {
-				console.log("hey now");
-
 				if (!propertyId || !jwtToken) return;
-				console.log("say now");
 				const res = await fetch(
-					`http://192.168.177.139:9999/api/property/${propertyId}`,
+					`http://192.168.232.139:9999/api/property/${propertyId}`,
 					{
 						headers: {
 							Authorization: jwtToken && `Bearer ${jwtToken}`,
@@ -86,8 +83,8 @@ const PropertyPage = () => {
 				setProperty({
 					...property,
 					...data.property,
-					rating: Math.floor(Math.random() * 5) + 1,
-					ratingNumber: Math.floor(Math.random() * 1000) + 1,
+					// rating: Math.floor(Math.random() * 5) + 1,
+					// ratingNumber: Math.floor(Math.random() * 1000) + 1,
 				});
 			})();
 		} catch (error) {
@@ -134,7 +131,7 @@ const PropertyPage = () => {
 	}
 
 	return (
-		<View className="flex-1">
+		<View className="flex">
 			{/* Top Main Image and Carousel of Houses */}
 			<View className="w-full h-2/6">
 				<Image source={{ uri: property.mainImage }} className="w-full h-full" />

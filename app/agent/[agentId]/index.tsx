@@ -16,6 +16,7 @@ import {
 	CalendarDays,
 	ChevronLeft,
 	MapPinHouse,
+	Phone,
 	Stars,
 } from "lucide-react-native";
 import {
@@ -32,6 +33,8 @@ interface Agent {
 	fullName: string;
 	phoneNumber: string;
 	role: "agent";
+	rating: number;
+	ratingNumber: number;
 	createdAt: Date;
 }
 
@@ -63,6 +66,8 @@ export default function viewAgent() {
 		fullName: "",
 		phoneNumber: "",
 		role: "agent",
+		rating: 0,
+		ratingNumber: 0,
 		createdAt: new Date(),
 	});
 
@@ -81,7 +86,7 @@ export default function viewAgent() {
 					Authorization: `Bearer ${jwtToken}`,
 				};
 				const res = await fetch(
-					`http://192.168.177.139:9999/api/agent/${agentId}`,
+					`http://192.168.232.139:9999/api/agent/${agentId}`,
 					{
 						headers,
 					}
@@ -119,13 +124,16 @@ export default function viewAgent() {
 	}
 
 	return (
-		<View className="flex flex-col">
+		<View className="flex h-full">
 			<View className="w-full h-1/2">
 				<Image
 					source={{ uri: "https://picsum.photos/1000/500" }}
 					className="h-full w-full object-cover"
 				/>
-				<SafeAreaView className="absolute px-3 flex-row justify-between items-center w-full">
+				<SafeAreaView
+					className="absolute px-3 flex-row justify-between items-center w-full"
+					style={{ marginTop: SB.currentHeight }}
+				>
 					<TouchableOpacity
 						onPress={() => router.back()}
 						className="flex flex-row gap-2 bg-white rounded-full p-2"
@@ -139,7 +147,7 @@ export default function viewAgent() {
 				<View className="m-[2em]">
 					<Text className="text-4xl font-bold">Meet {agent.fullName}</Text>
 					<View className="flex flex-row gap-x-4 items-center mt-4">
-						<MapPinHouse size={20} color={"black"} />
+						<Phone size={20} color={"black"} />
 						<Text className="text-xl">{agent.phoneNumber}</Text>
 					</View>
 					<View className="flex flex-row gap-x-4 items-center mt-2">
@@ -148,10 +156,13 @@ export default function viewAgent() {
 							{timeago(new Date(agent.createdAt))} of housing experience
 						</Text>
 					</View>
-					{/* <View className="flex flex-row gap-x-4 items-center mt-2">
+					<View className="flex flex-row gap-x-4 items-center mt-2">
 						<Stars size={20} color={"black"} />
-						<Text className="text-xl">Has a rating of 4.9</Text>
-					</View> */}
+						<Text className="text-xl">
+							Has a rating of {agent.rating} stars ({agent.ratingNumber}{" "}
+							reviews)
+						</Text>
+					</View>
 				</View>
 
 				<View className="bg-white hover:bg-gray-200 p-4 mt-[2em] mx-[1em] rounded-2xl flex flex-row items-center justify-center border">

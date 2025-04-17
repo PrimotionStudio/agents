@@ -6,6 +6,7 @@ import {
 	Image,
 	TextInput,
 	GestureResponderEvent,
+	Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { router } from "expo-router";
@@ -38,7 +39,16 @@ function timeago(date: Date): string {
 	return `${minutes} minutes`;
 }
 
+interface User {
+	_id: string;
+	fullName: string;
+	phoneNumber: string;
+	role: "buyer" | "agent";
+	createdAt: Date;
+}
+
 export default function ProfilePage() {
+	const [currentUser, setCurrentUser] = useState<User>();
 	const [fullName, setFullName] = useState("");
 	const [phoneNumber, setPhoneNumber] = useState("");
 	const [jwtToken, setJwtToken] = useState<string>("");
@@ -49,23 +59,67 @@ export default function ProfilePage() {
 			setJwtToken(await SecureStore.getItemAsync("jwtToken"));
 		})();
 	}, []);
+	useEffect(() => {
+		(async () => {
+			if (!jwtToken) return;
+			const res = await fetch("http://192.168.232.139:9999/api/user/me", {
+				headers: {
+					Authorization: `Bearer ${jwtToken}`,
+				},
+			});
+			const data = await res.json();
+			if (!res.ok) {
+				setIsFetching(false);
+				return;
+			}
+			setCurrentUser(data.user);
+			setFullName(data.user.fullName);
+			setPhoneNumber(data.user.phoneNumber);
+			setIsFetching(false);
+		})();
+	}, [jwtToken]);
+
 	async function editProfile(event: GestureResponderEvent) {
 		event.preventDefault();
 		try {
-			if (!jwtToken || !fullName || !phoneNumber) return;
+			if (!jwtToken || !fullName || !phoneNumber || !currentUser) return;
 
-			const res = await fetch(`http://192.168.177.139:9999/api/user/update`, {
+			const res = await fetch(`http://192.168.232.139:9999/api/user/update`, {
 				method: "PATCH",
 				headers: {
 					"Content-Type": "application/json",
+					Authorization: `Bearer ${jwtToken}`,
 				},
-				body: JSON.stringify({ fullName, phoneNumber }),
+				body: JSON.stringify({
+					userId: currentUser._id,
+					fullName,
+					phoneNumber,
+				}),
 			});
-		} catch (error) {}
+			const data = await res.json();
+			if (!res.ok) {
+				throw new Error(data.message);
+			}
+			Alert.alert("Success", data.message);
+			setFullName(data.user.fullName);
+			setPhoneNumber(data.user.phoneNumber);
+			setCurrentUser(data.user);
+		} catch (error) {
+			console.error(error);
+			Alert.alert("Error", (error as Error).message);
+		}
+	}
+
+	if (isFetching) {
+		return (
+			<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+				<View className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></View>
+			</View>
+		);
 	}
 
 	return (
-		<View className="flex flex-col">
+		<View className="flex">
 			<View className="w-full h-1/2">
 				<Image
 					source={{ uri: "https://picsum.photos/1000/500" }}
@@ -84,7 +138,7 @@ export default function ProfilePage() {
 			<View className="w-full h-1/2 ">
 				<View className="m-[2em]">
 					<Text className="text-4xl font-bold">Edit Profile</Text>
-					<View className="flex flex-row gap-x-4 items-center mt-4">
+					<View className="flex gap-y-4 items-center mt-4">
 						<TextInput
 							placeholder="Full Name"
 							value={fullName}
@@ -100,7 +154,9 @@ export default function ProfilePage() {
 					</View>
 					<View className="flex flex-row gap-x-4 items-center mt-2">
 						<CalendarDays size={20} color={"black"} />
-						<Text className="text-xl">Joined {timeago(new Date())} ago</Text>
+						<Text className="text-xl">
+							Joined {timeago(new Date(currentUser?.createdAt))} ago
+						</Text>
 					</View>
 					{/* <View className="flex flex-row gap-x-4 items-center mt-2">
 						<Stars size={20} color={"black"} />
@@ -108,7 +164,7 @@ export default function ProfilePage() {
 					</View> */}
 				</View>
 
-				<View className="bg-white hover:bg-gray-200 p-4 mt-[2em] mx-[1em] rounded-2xl flex flex-row items-center justify-center border">
+				<View className="bg-white hover:bg-gray-200 p-3 mt-[2em] mx-[1em] rounded-2xl flex flex-row items-center justify-center border">
 					<TouchableOpacity onPress={editProfile}>
 						<Text className="text-3xl">Update</Text>
 					</TouchableOpacity>

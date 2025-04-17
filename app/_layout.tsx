@@ -10,6 +10,7 @@ export default function Layout() {
 				name="agent/[agentId]/index"
 				options={{ presentation: "formSheet" }}
 			/>
+			<Stack.Screen name="property/create/index" />
 			<Stack.Screen
 				name="property/[propertyId]/index"
 				options={{ presentation: "formSheet" }}

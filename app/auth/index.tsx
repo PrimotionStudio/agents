@@ -38,7 +38,7 @@ export default function Auth() {
 		event.preventDefault();
 		try {
 			// const res = await fetch(`${process.env.API_URI}/api/auth/login`, {
-			const res = await fetch(`http://192.168.232.139:9999/api/auth/login`, {
+			const res = await fetch(`${process.env.API_URI}/api/auth/login`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -72,7 +72,7 @@ export default function Auth() {
 				throw new Error("Passwords do not match");
 			}
 			// const res = await fetch(`${process.env.API_URI}/api/auth/register`, {
-			const res = await fetch(`http://192.168.232.139:9999/api/auth/register`, {
+			const res = await fetch(`${process.env.API_URI}/api/auth/register`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",

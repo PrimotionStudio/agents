@@ -66,7 +66,7 @@ const PropertyPage = () => {
 			(async () => {
 				if (!propertyId || !jwtToken) return;
 				const res = await fetch(
-					`http://192.168.232.139:9999/api/property/${propertyId}`,
+					`${process.env.API_URI}/api/property/${propertyId}`,
 					{
 						headers: {
 							Authorization: jwtToken && `Bearer ${jwtToken}`,

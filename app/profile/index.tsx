@@ -62,7 +62,7 @@ export default function ProfilePage() {
 	useEffect(() => {
 		(async () => {
 			if (!jwtToken) return;
-			const res = await fetch("http://192.168.232.139:9999/api/user/me", {
+			const res = await fetch(`${process.env.API_URI}/api/user/me`, {
 				headers: {
 					Authorization: `Bearer ${jwtToken}`,
 				},
@@ -84,7 +84,7 @@ export default function ProfilePage() {
 		try {
 			if (!jwtToken || !fullName || !phoneNumber || !currentUser) return;
 
-			const res = await fetch(`http://192.168.232.139:9999/api/user/update`, {
+			const res = await fetch(`${process.env.API_URI}/api/user/update`, {
 				method: "PATCH",
 				headers: {
 					"Content-Type": "application/json",

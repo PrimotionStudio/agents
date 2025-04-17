@@ -85,12 +85,9 @@ export default function viewAgent() {
 				const headers = {
 					Authorization: `Bearer ${jwtToken}`,
 				};
-				const res = await fetch(
-					`http://192.168.232.139:9999/api/agent/${agentId}`,
-					{
-						headers,
-					}
-				);
+				const res = await fetch(`${process.env.API_URI}/api/agent/${agentId}`, {
+					headers,
+				});
 
 				const data = await res.json();
 				if (!res.ok) {

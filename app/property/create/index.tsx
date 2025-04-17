@@ -58,7 +58,7 @@ export default function createProperty() {
 	useEffect(() => {
 		(async () => {
 			if (!jwtToken) return;
-			const res = await fetch("http://192.168.232.139:9999/api/user/me", {
+			const res = await fetch(`${process.env.API_URI}/api/user/me`, {
 				headers: {
 					Authorization: `Bearer ${jwtToken}`,
 				},
@@ -142,17 +142,14 @@ export default function createProperty() {
 			return;
 		}
 		try {
-			const res = await fetch(
-				`http://192.168.232.139:9999/api/property/create`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: jwtToken && `Bearer ${jwtToken}`,
-					},
-					body: JSON.stringify({ ...property, agent: currentUser._id }),
-				}
-			);
+			const res = await fetch(`${process.env.API_URI}/api/property/create`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: jwtToken && `Bearer ${jwtToken}`,
+				},
+				body: JSON.stringify({ ...property, agent: currentUser._id }),
+			});
 			const data = await res.json();
 			if (!res.ok) {
 				throw new Error(data.message || "Failed to save property");

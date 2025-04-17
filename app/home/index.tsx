@@ -72,8 +72,8 @@ const HomePage = () => {
 
 					// Fetch both user and property data in parallel
 					const [userRes, propertyRes] = await Promise.all([
-						fetch("http://192.168.232.139:9999/api/user/me", { headers }),
-						fetch("http://192.168.232.139:9999/api/property", { headers }),
+						fetch(`${process.env.API_URI}/api/user/me`, { headers }),
+						fetch(`${process.env.API_URI}/api/property`, { headers }),
 					]);
 
 					const [userData, propertyData] = await Promise.all([
@@ -102,7 +102,7 @@ const HomePage = () => {
 					setRightProperties(mappedProps.filter((_, index) => index % 2 !== 0));
 				} else {
 					const propertyRes = await fetch(
-						"http://192.168.232.139:9999/api/property"
+						`${process.env.API_URI}/api/property`
 					);
 					const propertyData = await propertyRes.json();
 

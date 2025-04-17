@@ -1,6 +1,6 @@
 {
   "expo": {
-	"userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "scheme": "acme",
     "plugins": [
@@ -10,6 +10,17 @@
     "slug": "agents",
     "web": {
       "bundler": "metro"
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "bff574a5-686b-4014-9453-ab2b0062e12e"
+      }
+    },
+    "android": {
+      "package": "com.theprimotionstudio.agents"
     }
   }
 }
